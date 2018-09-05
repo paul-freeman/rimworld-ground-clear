@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>GroundClear</name>
+  <author>freemapa</author>
+  <targetVersion>0.19.2009</targetVersion>
+  <description>Modifies the Clear Snow area to also remove plants and trees, allowing paths and other clear areas to be created in all biomes.</description>
+  <url></url>
+</ModMetaData>

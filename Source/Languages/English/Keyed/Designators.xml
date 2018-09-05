@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <DesignatorAreaGroundClearExpand>Expand ground clearing</DesignatorAreaGroundClearExpand>
+  <DesignatorAreaGroundClearExpandDesc>Expand ground clearing area. Colonists will try to keep this area clear of plants, trees, and snow.</DesignatorAreaGroundClearExpandDesc>
+  <DesignatorAreaGroundClearClear>Ignore ground clearing</DesignatorAreaGroundClearClear>
+  <DesignatorAreaGroundClearClearDesc>Ignore ground clearing area. Colonists will no longer try to keep this area clear of plants, trees, or snow.</DesignatorAreaGroundClearClearDesc>
+</LanguageData>
