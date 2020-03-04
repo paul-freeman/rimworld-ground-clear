@@ -1,8 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
   <name>GroundClear</name>
-  <author>freemapa</author>
-  <targetVersion>0.19.2009</targetVersion>
-  <description>Modifies the Clear Snow area to also remove plants and trees, allowing paths and other clear areas to be created in all biomes.</description>
+  <author>Paul Freeman</author>
+  <packageId>freemapa.groundclear</packageId>
   <url></url>
+  <supportedVersions>
+    <li>1.1</li>
+  </supportedVersions>
+  <description>Modifies the Clear Snow area to also remove plants and trees, allowing paths and other clear areas to be created in all biomes.</description>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+      <downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+    </li>
+  </modDependencies>
 </ModMetaData>

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-using Harmony;
+using HarmonyLib;
 using Verse;
 using Verse.AI;
 using RimWorld;
@@ -91,7 +91,7 @@ namespace GroundClear
     {
         static ClearPathPatch()
         {
-            HarmonyInstance harmony = HarmonyInstance.Create("rimworld.freemapa.clearpath");
+            var harmony = new Harmony("rimworld.freemapa.clearpath");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
     }
