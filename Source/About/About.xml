@@ -6,6 +6,7 @@
   <url></url>
   <supportedVersions>
     <li>1.1</li>
+    <li>1.2</li>
   </supportedVersions>
   <description>Modifies the Clear Snow area to also remove plants and trees, allowing paths and other clear areas to be created in all biomes.</description>
   <modDependencies>
