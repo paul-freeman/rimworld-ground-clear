@@ -24,37 +24,49 @@ namespace GroundClear
 
         public override bool HasJobOnCell(Pawn pawn, IntVec3 c, bool forced = false)
         {
+            return GetPlantOnCell(pawn, c, forced) != null;
+        }
+
+        private static Plant GetPlantOnCell(Pawn pawn, IntVec3 c, bool forced)
+        {
             Plant plant = c.GetPlant(pawn.Map);
-            ThingDef wantedPlantDef = WorkGiver_Grower.CalculateWantedPlantDef(c, pawn.Map);
-            if (plant == null || plant.def == wantedPlantDef)
+            if (plant == null)
             {
-                return false;
+                return null;
             }
-            if (c.IsForbidden(pawn))
+            if (c.IsForbidden(pawn) || plant.IsForbidden(pawn))
             {
-                return false;
+                return null;
+            }
+            ThingDef wantedPlantDef = WorkGiver_Grower.CalculateWantedPlantDef(c, pawn.Map);
+            if (plant.def == wantedPlantDef)
+            {
+                return null;
+            }
+            if (plant.def.plant.IsTree)
+            {
+                if (pawn.Ideo.HasMeme(MemeDefOf.TreeConnection))
+                {
+                    return null;
+                }
+                if (pawn.Ideo.HasPrecept(DefDatabase<PreceptDef>.GetNamed("Trees_Desired")))
+                {
+                    return null;
+                }
             }
             LocalTargetInfo target = plant;
             bool ignoreOtherReservations = forced;
             if (!pawn.CanReserve(target, 1, -1, null, ignoreOtherReservations))
             {
-                return false;
+                return null;
             }
-            return true;
+            return plant;
         }
 
         public override Job JobOnCell(Pawn pawn, IntVec3 c, bool forced = false)
         {
-            Plant plant = c.GetPlant(pawn.Map);
-            Map map = pawn.Map;
-            ThingDef wantedPlantDef = WorkGiver_Grower.CalculateWantedPlantDef(c, pawn.Map);
-            if (plant == null || plant.def == wantedPlantDef)
-            {
-                return null;
-            }
-            LocalTargetInfo target = plant;
-    		bool ignoreOtherReservations = forced;
-            if (!pawn.CanReserve(target, 1, -1, null, ignoreOtherReservations) || plant.IsForbidden(pawn))
+            Plant plant = GetPlantOnCell(pawn, c, forced);
+            if (plant == null)
             {
                 return null;
             }
