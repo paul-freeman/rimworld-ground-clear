@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-
 using HarmonyLib;
 using Verse;
 using Verse.AI;
@@ -74,6 +73,78 @@ namespace GroundClear
         }
     }
 
+    [HarmonyPatch(typeof(Pawn), "Tick")]
+    public class GroundClearTick
+    {
+        static Dictionary<Pawn, IntVec3> position = new Dictionary<Pawn, IntVec3>();
+
+        static void Postfix(Pawn __instance)
+        {
+            Pawn pawn = __instance;
+            try
+            {
+                if (pawn == null || pawn.Position == null || pawn.Map == null)
+                {
+                    return;
+                }
+                if (!pawn.pather.Moving)
+                {
+                    return;
+                }
+                IntVec3 oldPos;
+                if (position.TryGetValue(pawn, out oldPos))
+                {
+                    if (oldPos == pawn.Position)
+                    {
+                        // pawn is still on same tile
+                        return;
+                    }
+                }
+                position[pawn] = pawn.Position;
+                Plant plant = GridsUtility.GetPlant(pawn.Position, pawn.Map);
+                if (plant == null)
+                {
+                    return;
+                }
+                // colonists should not damage their crops unless drafted
+                if (plant.IsCrop && pawn.IsColonistPlayerControlled && !pawn.Drafted)
+                {
+                    return;
+                }
+                // harvestable trees are considered too big to damage (unless
+                // body size is 2.0 or larger)
+                if (plant.def.plant.IsTree && plant.HarvestableNow && pawn.BodySize < 2.0f)
+                {
+                    return;
+                }
+                if (plant.Growth <= 0.0f)
+                {
+                    return;
+                }
+                var damage = pawn.BodySize * pawn.GetStatValue(StatDefOf.MeleeDPS) / plant.Growth;
+                if (pawn.AnimalOrWildMan())
+                {
+                    // calm animals damage plants much less
+                    if (!pawn.InAggroMentalState)
+                    {
+                        damage *= 0.1f;
+                    }
+                }
+                if (pawn.RaceProps.FleshType == FleshTypeDefOf.Mechanoid)
+                {
+                    // mechanoids damages plants more
+                    damage *= 1.5f;
+                }
+                plant.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, damage, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null));
+                // Log.Message($"{pawn.def.defName} ({pawn.Name}) caused {damage} damage to {plant.def.defName} - growth={plant.Growth}");
+            }
+            catch (System.Exception e)
+            {
+                Log.ErrorOnce($"could not clear path: {e}", 510515686);
+                return;
+            }
+        }
+    }
 
     // Gizmo patch
     [HarmonyPatch(typeof(Command))]
@@ -96,7 +167,6 @@ namespace GroundClear
             }
         }
     }
-
 
     [StaticConstructorOnStartup]
     static class ClearPathPatch
